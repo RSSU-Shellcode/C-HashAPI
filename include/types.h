@@ -39,7 +39,7 @@ typedef int32 rune;
 #define INT16_MAX  32767i16
 #define INT32_MAX  2147483647i32
 #define INT64_MAX  9223372036854775807i64
-#define UINT8_MAX  0xffui8
-#define UINT16_MAX 0xffffui16
-#define UINT32_MAX 0xffffffffui32
-#define UINT64_MAX 0xffffffffffffffffui64
+#define UINT8_MAX  0xFFui8
+#define UINT16_MAX 0xFFFFui16
+#define UINT32_MAX 0xFFFFFFFFui32
+#define UINT64_MAX 0xFFFFFFFFFFFFFFFFui64
