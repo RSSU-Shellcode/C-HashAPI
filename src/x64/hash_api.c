@@ -6,102 +6,104 @@
 #define ROR_MOD  (ROR_BITS+3)
 #define ROR_FUNC (ROR_BITS+4)
 
-uintptr FindAPI(uint hash, uint key)
+uintptr FindAPI(uint64 hash, uint64 key)
 {
-    uint seed_hash = calcSeedHash(key);
-    uint key_hash = calcKeyHash(seed_hash, key);
+    uint64 seedHash = calcSeedHash(key);
+    uint64 keyHash  = calcKeyHash(seedHash, key);
+
     uintptr peb = __readgsqword(96);
     uintptr ldr = *(uintptr*)(peb + 24);
     uintptr mod = *(uintptr*)(ldr + 32);
+
     for (;; mod = *(uintptr*)(mod)) {
-        uintptr mod_name = *(uintptr*)(mod + 80);
-        if (mod_name == 0x00)
+        uintptr modName = *(uintptr*)(mod + 80);
+        if (modName == 0x00)
         {
             break;
         }
-        uintptr mod_base = *(uintptr*)(mod + 32);
-        uintptr pe_header = mod_base + *(uint32*)(mod_base + 60);
+        uintptr modBase = *(uintptr*)(mod + 32);
+        uintptr peHeader = modBase + *(uint32*)(modBase + 60);
         // check this module actually a PE64 executable
-        if (*(uint16*)(pe_header + 24) != 0x020B) {
+        if (*(uint16*)(peHeader + 24) != 0x020B) {
             continue;
         }
         // get RVA of export address tables(EAT)
-        uint32 eat_rva = *(uint32*)(pe_header + 136);
-        if (eat_rva == 0) {
+        uint32 eatRVA = *(uint32*)(peHeader + 136);
+        if (eatRVA == 0) {
             continue;
         }
-        uintptr eat = mod_base + eat_rva;
+        uintptr eat = modBase + eatRVA;
         // calculate module name hash
-        uint mod_hash = seed_hash;
-        uint16 name_len = *(uint16*)(mod + 74);
-        for (uint16 i = 0; i < name_len; i++)
+        uint64 modHash = seedHash;
+        uint16 nameLen = *(uint16*)(mod + 74);
+        for (uint16 i = 0; i < nameLen; i++)
         {
-            byte b = *(byte*)(mod_name + i);
+            byte b = *(byte*)(modName + i);
             if (b >= 'a')
             {
                 b -= 0x20;
             }
-            mod_hash = ror64(mod_hash, ROR_MOD);
-            mod_hash += b;
+            modHash = ror64(modHash, ROR_MOD);
+            modHash += b;
         }
         // calcualte function name hash
-        uint32 num_func = *(uint32*)(eat + 24);
-        uintptr func_names = mod_base + *(uint32*)(eat + 32);
-        for (uint32 i = 0; i < num_func; i++)
+        uint32 numFunc = *(uint32*)(eat + 24);
+        uintptr funcNames = modBase + *(uint32*)(eat + 32);
+        for (uint32 i = 0; i < numFunc; i++)
         {
             // calculate function name address
-            byte* func_name = (byte*)(mod_base + *(uint32*)(func_names + i * 4));
-            uint func_hash = seed_hash;
+            byte* funcName = (byte*)(modBase + *(uint32*)(funcNames + i * 4));
+            uint64 funcHash = seedHash;
             for (;;)
             {
-                byte b = *func_name;
-                func_hash = ror64(func_hash, ROR_FUNC);
-                func_hash += b;
+                byte b = *funcName;
+                funcHash = ror64(funcHash, ROR_FUNC);
+                funcHash += b;
                 if (b == 0x00)
                 {
                     break;
                 }
-                func_name++;
+                funcName++;
             }
             // calculate the finally hash and compare it
-            uint api_hash = seed_hash + key_hash + mod_hash + func_hash;
-            if (api_hash != hash) {
+            uint64 apiHash = seedHash + keyHash + modHash + funcHash;
+            if (apiHash != hash) {
                 continue;
             }
             // calculate the ordinal table
-            uintptr func_table = mod_base + *(uint32*)(eat + 28);
+            uintptr funcTable = modBase + *(uint32*)(eat + 28);
             // calculate the desired functions ordinal
-            uintptr ordinal_table = mod_base + *(uint32*)(eat + 36);
-            uint16 ordinal = *(uint16*)(ordinal_table + i * 2);
+            uintptr ordinalTable = modBase + *(uint32*)(eat + 36);
+            uint16 ordinal = *(uint16*)(ordinalTable + i * 2);
             // calculate the function address
-            return mod_base + *(uint32*)(func_table + ordinal * 4);
+            return modBase + *(uint32*)(funcTable + ordinal * 4);
         }
     }
     return 0;
 }
 
-static uint64 calcSeedHash(uint key)
+static uint64 calcSeedHash(uint64 key)
 {
     uint64 hash = key;
-    byte* lpKey = (byte*)(&key);
+    byte*  ptr  = (byte*)(&key);
     for (int i = 0; i < 8; i++)
     {
         hash = ror64(hash, ROR_SEED);
-        hash += *lpKey;
-        lpKey++;
+        hash += *ptr;
+        ptr++;
     }
     return hash;
 }
 
-static uint64 calcKeyHash(uint seed, uint key)
+static uint64 calcKeyHash(uint64 seed, uint64 key)
 {
     uint64 hash = seed;
-    byte* lpKey = (byte*)(&key);
+    byte*  ptr  = (byte*)(&key);
     for (int i = 0; i < 8; i++)
     {
         hash = ror64(hash, ROR_KEY);
-        hash += *lpKey;
-        lpKey++;
+        hash += *ptr;
+        ptr++;
     }
     return hash;
 }
