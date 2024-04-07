@@ -21,7 +21,7 @@ uintptr FindAPI(uint64 hash, uint64 key)
         {
             break;
         }
-        uintptr modBase = *(uintptr*)(mod + 32);
+        uintptr modBase  = *(uintptr*)(mod + 32);
         uintptr peHeader = modBase + *(uint32*)(modBase + 60);
         // check this module actually a PE64 executable
         if (*(uint16*)(peHeader + 24) != 0x020B) {
@@ -47,12 +47,12 @@ uintptr FindAPI(uint64 hash, uint64 key)
             modHash += b;
         }
         // calcualte function name hash
-        uint32 numFunc = *(uint32*)(eat + 24);
+        uint32  numFunc   = *(uint32*)(eat + 24);
         uintptr funcNames = modBase + *(uint32*)(eat + 32);
         for (uint32 i = 0; i < numFunc; i++)
         {
             // calculate function name address
-            byte* funcName = (byte*)(modBase + *(uint32*)(funcNames + i * 4));
+            byte*  funcName = (byte*)(modBase + *(uint32*)(funcNames + i * 4));
             uint64 funcHash = seedHash;
             for (;;)
             {
@@ -66,14 +66,15 @@ uintptr FindAPI(uint64 hash, uint64 key)
                 funcName++;
             }
             // calculate the finally hash and compare it
-            uint64 apiHash = seedHash + keyHash + modHash + funcHash;
-            if (apiHash != hash) {
+            uint64 h = seedHash + keyHash + modHash + funcHash;
+            if (h != hash) {
                 continue;
             }
             // calculate the ordinal table
             uintptr funcTable = modBase + *(uint32*)(eat + 28);
             // calculate the desired functions ordinal
             uintptr ordinalTable = modBase + *(uint32*)(eat + 36);
+            // calculate offset of ordinal
             uint16 ordinal = *(uint16*)(ordinalTable + i * 2);
             // calculate the function address
             return modBase + *(uint32*)(funcTable + ordinal * 4);

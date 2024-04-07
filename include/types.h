@@ -23,7 +23,7 @@ typedef float  float32;
 typedef double float64;
 
 typedef unsigned char byte;
-typedef int32 rune;
+typedef int32         rune;
 
 #define TRUE  1;
 #define FALSE 0;
