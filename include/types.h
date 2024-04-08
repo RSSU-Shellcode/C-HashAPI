@@ -47,4 +47,4 @@ typedef int32         rune;
 #define UINT32_MAX 0xFFFFFFFFui32
 #define UINT64_MAX 0xFFFFFFFFFFFFFFFFui64
 
-#endif
+#endif // TYPES_H
