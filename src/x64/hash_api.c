@@ -1,10 +1,15 @@
-#include "include/types.h"
+#include "types.h"
+#include "hash_api.h"
 
 #define ROR_BITS 8
 #define ROR_SEED (ROR_BITS+1)
 #define ROR_KEY  (ROR_BITS+2)
 #define ROR_MOD  (ROR_BITS+3)
 #define ROR_FUNC (ROR_BITS+4)
+
+static uint64 calcSeedHash(uint64 key);
+static uint64 calcKeyHash(uint64 seed, uint64 key);
+static uint64 ror64(uint64 value, uint64 bits);
 
 uintptr FindAPI(uint64 hash, uint64 key)
 {
