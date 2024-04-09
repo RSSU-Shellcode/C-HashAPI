@@ -1,5 +1,5 @@
 #include "types.h"
-#include "x64/hash_api.h"
+#include "hash_api.h"
 
 typedef uint(*WinExec)(char* lpCmdLine, uint uCmdShow);
 

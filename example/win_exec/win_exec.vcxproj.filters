@@ -18,7 +18,7 @@
     <ClCompile Include="win_exec.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\x64\hash_api.c">
+    <ClCompile Include="..\..\src\hash_api.c">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
