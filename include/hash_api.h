@@ -3,6 +3,10 @@
 
 #include "types.h"
 
-uintptr FindAPI(uint64 hash, uint64 key);
+#ifdef _WIN64
+	uintptr FindAPI(uint64 hash, uint64 key);
+#elif _WIN32
+	uintptr FindAPI(uint32 hash, uint32 key);
+#endif
 
 #endif // HASH_API_H
