@@ -1,6 +1,8 @@
 #include "types.h"
 #include "hash_api.h"
 
+#ifdef _WIN64
+
 #define ROR_BITS 8
 #define ROR_SEED (ROR_BITS+1)
 #define ROR_KEY  (ROR_BITS+2)
@@ -11,6 +13,7 @@ static uint64 calcSeedHash(uint64 key);
 static uint64 calcKeyHash(uint64 seed, uint64 key);
 static uint64 ror64(uint64 value, uint64 bits);
 
+// FindAPI is used to FindAPI address by hash and key.
 uintptr FindAPI(uint64 hash, uint64 key)
 {
     uint64 seedHash = calcSeedHash(key);
@@ -118,3 +121,7 @@ static uint64 ror64(uint64 value, uint64 bits)
 {
     return value >> bits | value << (64 - bits);
 }
+
+#elif _WIN32
+
+#endif
