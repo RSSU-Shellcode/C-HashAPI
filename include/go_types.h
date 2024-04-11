@@ -1,5 +1,5 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef GO_TYPES_H
+#define GO_TYPES_H
 
 // reference basic types from Go
 typedef char      int8;
@@ -13,13 +13,13 @@ typedef unsigned int       uint32;
 typedef unsigned long long uint64;
 
 #ifdef _WIN64
-    typedef int64  integer;
-    typedef uint64 uint;
-    typedef uint64 uintptr;
+typedef int64  integer;
+typedef uint64 uint;
+typedef uint64 uintptr;
 #elif _WIN32
-    typedef int32  integer;
-    typedef uint32 uint;
-    typedef uint32 uintptr;
+typedef int32  integer;
+typedef uint32 uint;
+typedef uint32 uintptr;
 #endif
 
 typedef float  float32;
@@ -28,8 +28,9 @@ typedef double float64;
 typedef unsigned char byte;
 typedef int32         rune;
 
-#define TRUE  1
-#define FALSE 0
+typedef _Bool bool;
+#define true  1
+#define false 0
 
 #define NULL 0
 
@@ -47,4 +48,4 @@ typedef int32         rune;
 #define UINT32_MAX 0xFFFFFFFFui32
 #define UINT64_MAX 0xFFFFFFFFFFFFFFFFui64
 
-#endif // TYPES_H
+#endif // GO_TYPES_H
