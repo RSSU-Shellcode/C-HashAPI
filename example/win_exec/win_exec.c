@@ -1,7 +1,8 @@
-#include "types.h"
+#include "go_types.h"
 #include "hash_api.h"
 
-typedef uint(*WinExec)(char* lpCmdLine, uint uCmdShow);
+typedef byte* LPCSTR;
+typedef uint (*WinExec)(LPCSTR lpCmdLine, uint uCmdShow);
 
 #pragma comment(linker, "/ENTRY:EntryMain")
 uint EntryMain() {
