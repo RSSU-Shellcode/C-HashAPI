@@ -57,7 +57,7 @@ uintptr FindAPI(uint64 hash, uint64 key)
             modHash = ror64(modHash, ROR_MOD);
             modHash += b;
         }
-        // calcualte function name hash
+        // calculate function name hash
         uint32  numFunc   = *(uint32*)(eat + 24);
         uintptr funcNames = modBase + *(uint32*)(eat + 32);
         for (uint32 i = 0; i < numFunc; i++)
@@ -179,7 +179,7 @@ uintptr FindAPI(uint32 hash, uint32 key)
             modHash = ror32(modHash, ROR_MOD);
             modHash += b;
         }
-        // calcualte function name hash
+        // calculate function name hash
         uint32  numFunc   = *(uint32*)(eat + 24);
         uintptr funcNames = modBase + *(uint32*)(eat + 32);
         for (uint32 i = 0; i < numFunc; i++)
