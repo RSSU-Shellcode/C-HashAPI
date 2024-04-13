@@ -18,6 +18,6 @@ uint EntryMain() {
     {
         return 0;
     }
-    char cmd[] = {'c', 'a', 'l', 'c', '.', 'e', 'x', 'e', 0};
+    byte cmd[] = {'c', 'a', 'l', 'c', '.', 'e', 'x', 'e', 0};
     return winExec(&cmd[0], 1);
 }
