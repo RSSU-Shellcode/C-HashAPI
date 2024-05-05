@@ -2,20 +2,42 @@
 #include "hash_api.h"
 
 #ifdef _WIN64
-    #define HASH_KEY_SIZE 8
-    #define ROR_BITS      8
+    #define KEY_SIZE 8
+    #define ROR_BITS 8
 #elif _WIN32
-    #define HASH_KEY_SIZE 4
-    #define ROR_BITS      4
+    #define KEY_SIZE 4
+    #define ROR_BITS 4
 #endif
 #define ROR_SEED (ROR_BITS + 1)
 #define ROR_KEY  (ROR_BITS + 2)
 #define ROR_MOD  (ROR_BITS + 3)
 #define ROR_FUNC (ROR_BITS + 4)
 
+#define KEY_SIZE_64 8
+#define ROR_BITS_64 8
+#define ROR_SEED_64 (ROR_BITS_64 + 1)
+#define ROR_KEY_64  (ROR_BITS_64 + 2)
+#define ROR_MOD_64  (ROR_BITS_64 + 3)
+#define ROR_FUNC_64 (ROR_BITS_64 + 4)
+
+#define KEY_SIZE_32 4
+#define ROR_BITS_32 4
+#define ROR_SEED_32 (ROR_BITS_32 + 1)
+#define ROR_KEY_32  (ROR_BITS_32 + 2)
+#define ROR_MOD_32  (ROR_BITS_32 + 3)
+#define ROR_FUNC_32 (ROR_BITS_32 + 4)
+
 static uint calcSeedHash(uint key);
 static uint calcKeyHash(uint seed, uint key);
 static uint ror(uint value, uint bits);
+
+static uint64 calcSeedHash64(uint64 key);
+static uint64 calcKeyHash64(uint64 seed, uint64 key);
+static uint64 ror64(uint64 value, uint64 bits);
+
+static uint32 calcSeedHash32(uint32 key);
+static uint32 calcKeyHash32(uint32 seed, uint32 key);
+static uint32 ror32(uint32 value, uint32 bits);
 
 uintptr FindAPI(uint hash, uint key)
 {
@@ -120,7 +142,7 @@ uintptr FindAPI(uint hash, uint key)
     return NULL;
 }
 
-uint HashAPI_A(byte* module, byte* function, uint key)
+uint HashAPI64_A(byte* module, byte* function, uint64 key)
 {
     uint seedHash = calcSeedHash(key);
     uint keyHash  = calcKeyHash(seedHash, key);
@@ -158,7 +180,7 @@ uint HashAPI_A(byte* module, byte* function, uint key)
     return seedHash + keyHash + modHash + funcHash;
 }
 
-uint HashAPI_W(byte* module, byte* function, uint key)
+uint HashAPI64_W(byte* module, byte* function, uint key)
 {
     uint seedHash = calcSeedHash(key);
     uint keyHash  = calcKeyHash(seedHash, key);
@@ -202,7 +224,7 @@ static uint calcSeedHash(uint key)
 {
     uint  hash = key;
     byte* ptr  = (byte*)(&key);
-    for (int i = 0; i < HASH_KEY_SIZE; i++)
+    for (int i = 0; i < KEY_SIZE; i++)
     {
         hash = ror(hash, ROR_SEED);
         hash += *ptr;
@@ -215,7 +237,7 @@ static uint calcKeyHash(uint seed, uint key)
 {
     uint  hash = seed;
     byte* ptr  = (byte*)(&key);
-    for (int i = 0; i < HASH_KEY_SIZE; i++)
+    for (int i = 0; i < KEY_SIZE; i++)
     {
         hash = ror(hash, ROR_KEY);
         hash += *ptr;
@@ -231,4 +253,66 @@ static uint ror(uint value, uint bits)
 #elif _WIN32
     return value >> bits | value << (32 - bits);
 #endif
+}
+
+static uint64 calcSeedHash64(uint64 key)
+{
+    uint64 hash = key;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < 8; i++)
+    {
+        hash = ror64(hash, 8 + 1);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint64 calcKeyHash64(uint64 seed, uint64 key)
+{
+    uint64 hash = seed;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < 8; i++)
+    {
+        hash = ror64(hash, 8 + 2);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint64 ror64(uint64 value, uint64 bits)
+{
+    return value >> bits | value << (64 - bits);
+}
+
+static uint32 calcSeedHash32(uint32 key)
+{
+    uint32 hash = key;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < 4; i++)
+    {
+        hash = ror32(hash, 4 + 1);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint32 calcKeyHash32(uint32 seed, uint32 key)
+{
+    uint32 hash = seed;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < 4; i++)
+    {
+        hash = ror32(hash, 4 + 2);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint32 ror32(uint32 value, uint32 bits)
+{
+    return value >> bits | value << (32 - bits);
 }
