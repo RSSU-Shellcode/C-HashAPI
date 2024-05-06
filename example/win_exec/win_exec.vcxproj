@@ -14,6 +14,10 @@
     <ClCompile Include="..\..\src\hash_api.c" />
     <ClCompile Include="win_exec.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\go_types.h" />
+    <ClInclude Include="..\..\include\hash_api.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
