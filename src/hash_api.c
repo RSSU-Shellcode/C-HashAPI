@@ -46,7 +46,7 @@ uintptr FindAPI(uint hash, uint key)
     #elif _WIN32
         uintptr modBase = *(uintptr*)(mod + 16);
     #endif
-        uintptr peHeader = modBase + *(uint32*)(modBase + 60);
+        uintptr peHeader = modBase + (uintptr)(*(uint32*)(modBase + 60));
     #ifdef _WIN64
         // check this module actually a PE64 executable
         if (*(uint16*)(peHeader + 24) != 0x020B)
@@ -84,12 +84,13 @@ uintptr FindAPI(uint hash, uint key)
         }
         // calculate function name hash
         uint32  numFunc   = *(uint32*)(eat + 24);
-        uintptr funcNames = modBase + *(uint32*)(eat + 32);
+        uintptr funcNames = modBase + (uintptr)(*(uint32*)(eat + 32));
         for (uint32 i = 0; i < numFunc; i++)
         {
             // calculate function name address
-            byte* funcName = (byte*)(modBase + *(uint32*)(funcNames + i * 4));
-            uint  funcHash = seedHash;
+            uint32 nameOff  = *(uint32*)(funcNames + (uintptr)(i * 4));
+            byte*  funcName = (byte*)(modBase + nameOff);
+            uint   funcHash = seedHash;
             for (;;)
             {
                 byte b = *funcName;
@@ -108,13 +109,14 @@ uintptr FindAPI(uint hash, uint key)
                 continue;
             }
             // calculate the ordinal table
-            uintptr funcTable = modBase + *(uint32*)(eat + 28);
+            uintptr funcTable = modBase + (uintptr)(*(uint32*)(eat + 28));
             // calculate the desired functions ordinal
-            uintptr ordinalTable = modBase + *(uint32*)(eat + 36);
+            uintptr ordinalTable = modBase + (uintptr)(*(uint32*)(eat + 36));
             // calculate offset of ordinal
-            uint16 ordinal = *(uint16*)(ordinalTable + i * 2);
+            uint16 ordinal = *(uint16*)(ordinalTable + (uintptr)(i * 2));
             // calculate the function address
-            return modBase + *(uint32*)(funcTable + ordinal * 4);
+            uint32 funcOff = *(uint32*)(funcTable + (uintptr)(ordinal * 4));
+            return modBase + funcOff;
         }
     }
     return NULL;
@@ -232,7 +234,8 @@ uint64 HashAPI64_W(byte* module, byte* function, uint64 key)
     {
         byte b0 = *(module + 0);
         byte b1 = *(module + 1);
-        if (b0 >= 'a')
+        // check is ASCII
+        if (b1 == 0x00 && b0 >= 'a')
         {
             b0 -= 0x20;
         }
@@ -352,7 +355,8 @@ uint32 HashAPI32_W(byte* module, byte* function, uint32 key)
     {
         byte b0 = *(module + 0);
         byte b1 = *(module + 1);
-        if (b0 >= 'a')
+        // check is ASCII
+        if (b1 == 0x00 && b0 >= 'a')
         {
             b0 -= 0x20;
         }
