@@ -3,10 +3,9 @@
 #include "go_types.h"
 #include "hash_api.h"
 
-#define BANNER_TOTAL_SIZE 64
-#define BANNER_BEGIN_SIZE 10 // strlen("Test begin")
-#define BANNER_PASS_SIZE  11 // strlen("Test passed")
-#define BANNER_FAIL_SIZE  11 // strlen("Test failed")
+#define BANNER_BEGIN_SIZE 10 // strlen("Test Begin")
+#define BANNER_END_SIZE   11 // strlen("Test Passed")
+#define BANNER_FAIL_SIZE  11 // strlen("Test Failed")
 
 static printBannerBegin(byte* name, uint len);
 static printBannerEnd(byte* name, uint len, bool pass);
@@ -16,17 +15,17 @@ static bool TestHashAPI64();
 static bool TestHashAPI32();
 static bool TestFindAPI();
 
+typedef bool (*test_t)();
+typedef struct { byte* Name; test_t Test; } unit;
+unit tests[] = {
+    { "HashAPI"  , TestHashAPI   },
+    { "HashAPI64", TestHashAPI64 },
+    { "HashAPI32", TestHashAPI32 },
+    { "FindAPI"  , TestFindAPI   },
+};
+
 int main()
 {
-    typedef bool (*test_t)();
-    typedef struct { byte* Name; test_t Test; } unit;
-    unit tests[] = {
-        { "HashAPI"  , TestHashAPI   },
-        { "HashAPI64", TestHashAPI64 },
-        { "HashAPI32", TestHashAPI32 },
-        { "FindAPI"  , TestFindAPI   },
-    };
-
     // calculate the banner length
     uint maxNameLen = 0;
     for (int i = 0; i < arrlen(tests); i++)
@@ -37,19 +36,20 @@ int main()
             maxNameLen = len;
         }
     }
-    
+    // ================TestHashAPI begin================
+    uint bannerLen = (uint)16 + BANNER_END_SIZE + maxNameLen + 16;
 
     // run unit tests
     bool fail = false;
     for (int i = 0; i < arrlen(tests); i++)
     {
-        printBannerBegin(tests[i].Name, maxNameLen);
+        printBannerBegin(tests[i].Name, bannerLen);
         bool pass = tests[i].Test();
         if (!pass)
         {
             fail = true;
         }
-        printBannerEnd(tests[i].Name, maxNameLen, pass);
+        printBannerEnd(tests[i].Name, bannerLen, pass);
     }
 
     if (fail)
@@ -63,17 +63,20 @@ int main()
 
 static printBannerBegin(byte* name, uint len)
 {
-    uint padLen = (BANNER_TOTAL_SIZE - BANNER_BEGIN_SIZE - len) / 2;
-    bool equal  = (BANNER_TOTAL_SIZE - BANNER_BEGIN_SIZE - len) % 2 == 0;
+    uint padLen = ( len - BANNER_BEGIN_SIZE - strlen_a(name)) / 2;
+    bool equal  = ( len - BANNER_BEGIN_SIZE - strlen_a(name)) % 2 == 0;
+    // print prefix
     for (uint i = 0; i < padLen; i++)
     {
         printf("=");
     }
-    printf("Test%s begin", name);
+    printf("Test%s Begin", name);
+    // print suffix
     for (uint i = 0; i < padLen; i++)
     {
         printf("=");
     }
+    // padding data
     if (!equal)
     {
         printf("=");
@@ -83,13 +86,34 @@ static printBannerBegin(byte* name, uint len)
 
 static printBannerEnd(byte* name, uint len, bool pass)
 {
-
+    uint padLen = ( len - BANNER_END_SIZE - strlen_a(name)) / 2;
+    bool equal  = ( len - BANNER_END_SIZE - strlen_a(name)) % 2 == 0;
+    // print prefix
+    for (uint i = 0; i < padLen; i++)
+    {
+        printf("=");
+    }
+    if (pass)
+    {
+        printf("Test%s Passed", name);
+    } else {
+        printf("Test%s FAILED", name);
+    }
+    // print suffix
+    for (uint i = 0; i < padLen; i++)
+    {
+        printf("=");
+    }
+    // padding data
+    if (!equal)
+    {
+        printf("=");
+    }
+    printf("\n\n");
 }
 
 static bool TestHashAPI64()
 {
-    printf("========TestHashAPI64 begin========\n");
-
     byte*  module_a = "kernel32.dll";
     byte*  module_w = L"kernel32.dll";
     byte*  function = "WinExec";
@@ -111,15 +135,11 @@ static bool TestHashAPI64()
         printf("hash is not equal\n");
         return false;
     }
-
-    printf("========TestHashAPI64 passed=======\n");
     return true;
 }
 
 static bool TestHashAPI32()
 {
-    printf("========TestHashAPI32 begin========\n");
-
     byte*  module_a = "kernel32.dll";
     byte*  module_w = L"kernel32.dll";
     byte*  function = "WinExec";
@@ -141,15 +161,11 @@ static bool TestHashAPI32()
         printf("hash is not equal\n");
         return false;
     }
-
-    printf("========TestHashAPI32 passed=======\n");
     return true;
 }
 
 static bool TestHashAPI()
 {
-    printf("=========TestHashAPI begin=========\n");
-
     byte*  module_a = "kernel32.dll";
     byte*  module_w = L"kernel32.dll";
     byte*  function = "WinExec";
@@ -179,15 +195,11 @@ static bool TestHashAPI()
         printf("hash is not equal\n");
         return false;
     }
-
-    printf("=========TestHashAPI passed========\n");
     return true;
 }
 
 static bool TestFindAPI()
 {
-    printf("=========TestFindAPI begin=========\n");
-
     byte* module   = "kernel32.dll";
     byte* function = "WinExec";
 #ifdef _WIN64
@@ -204,7 +216,5 @@ static bool TestFindAPI()
         return false;
     }
     printf("WinExec: 0x%llX\n", (uint64)winExec);
-
-    printf("=========TestFindAPI passed========\n");
     return true;
 }
