@@ -50,6 +50,40 @@ typedef _Bool bool;
 #define UINT32_MAX 0xFFFFFFFFui32
 #define UINT64_MAX 0xFFFFFFFFFFFFFFFFui64
 
+// calculate ACSII string length.
+static uint strlen_a(byte* s)
+{
+    uint l = 0;
+    for (;;)
+    {
+        if (*s == 0x00)
+        {
+            break;
+        }
+        l++;
+        s++;
+    }
+    return l;
+}
+
+// calculate Unicode string length.
+static uint strlen_w(byte* s)
+{
+    uint l = 0;
+    for (;;)
+    {
+        byte b0 = *(s + 0);
+        byte b1 = *(s + 1);
+        if (b0 == 0x00 && b1 == 0x00)
+        {
+            break;
+        }
+        l++;
+        s += 2;
+    }
+    return l;
+}
+
 // calculate array length
 #ifndef arrlen
 #define arrlen(array) (sizeof(array) / sizeof(array[0]))
