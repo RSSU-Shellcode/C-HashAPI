@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\hash_api.c" />
-    <ClCompile Include="test.c" />
+    <ClCompile Include="hash_api_test.c" />
+    <ClCompile Include="test_main.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\go_types.h" />
     <ClInclude Include="..\include\hash_api.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
