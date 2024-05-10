@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include "test.h"
-#include "go_types.h"
+#include "c_types.h"
 #include "hash_api.h"
 
 bool TestHashAPI64()

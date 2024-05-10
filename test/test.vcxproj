@@ -24,8 +24,9 @@
     <ClCompile Include="test_main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\go_types.h" />
+    <ClInclude Include="..\include\c_types.h" />
     <ClInclude Include="..\include\hash_api.h" />
+    <ClInclude Include="..\include\windows_t.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

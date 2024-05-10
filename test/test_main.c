@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "go_types.h"
+#include "c_types.h"
 #include "test.h"
 
 #define BANNER_BEGIN_SIZE 10 // strlen("Test Begin")

@@ -26,13 +26,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\go_types.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\hash_api.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\c_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\windows_t.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
