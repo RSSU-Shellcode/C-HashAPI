@@ -101,12 +101,45 @@ bool TestFindAPI()
 #endif
     uint hash = HashAPI_A(module, function, key);
 
-    uintptr winExec = FindAPI(hash, key);
-    if (winExec != (uintptr)(&WinExec))
+    uintptr proc = FindAPI(hash, key);
+    if (proc != (uintptr)(&WinExec))
     {
+        printf("Proc: %llX\n", (uint64)proc);
+        printf("WinExec: %llX\n", (uint64)(&WinExec));
         printf("WinExec address is incorrect\n");
         return false;
     }
-    printf("WinExec: 0x%llX\n", (uint64)winExec);
+    printf("WinExec: 0x%llX\n", (uint64)proc);
+    return true;
+}
+
+bool TestForwarded()
+{
+    HMODULE hModule = LoadLibraryA("kernel32.dll");
+    if (hModule == NULL)
+    {
+        printf("failed to load kernel32.dll\n");
+        return false;
+    }
+    uintptr closeState = GetProcAddress(hModule, "CloseState");
+
+    byte* module   = "kernel32.dll";
+    byte* function = "CloseState";
+#ifdef _WIN64
+    uint key = 0x6A6867C72D518853;
+#elif _WIN32
+    uint key = 0xCADE960B;
+#endif
+    uint hash = HashAPI_A(module, function, key);
+
+    uintptr proc = FindAPI(hash, key);
+    if (proc != closeState)
+    {
+        printf("Proc: %llX\n", (uint64)proc);
+        printf("CloseState: %llX\n", (uint64)closeState);
+        printf("CloseState address is incorrect\n");
+        return false;
+    }
+    printf("CloseState: 0x%llX\n", (uint64)proc);
     return true;
 }
