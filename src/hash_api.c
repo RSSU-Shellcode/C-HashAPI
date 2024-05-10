@@ -117,8 +117,12 @@ uintptr FindAPI(uint hash, uint key)
             uint16 ordinal = *(uint16*)(ordinalTable + (uintptr)(i * 2));
             // calculate the function RVA
             uint32 funcRVA = *(uint32*)(funcTable + (uintptr)(ordinal * 4));
-            // check is forwarded export
+            // check is forwarded export function
+        #ifdef _WIN64
             uint32 eatSize = *(uint32*)(peHeader + 140);
+        #elif _WIN32
+            uint32 eatSize = *(uint32*)(peHeader + 124);
+        #endif
             if (funcRVA < eatRVA || funcRVA >= eatRVA + eatSize)
             {
                 return modBase + funcRVA;
