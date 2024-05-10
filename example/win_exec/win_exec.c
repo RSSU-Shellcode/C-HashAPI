@@ -1,8 +1,6 @@
-#include "go_types.h"
+#include "c_types.h"
+#include "windows_t.h"
 #include "hash_api.h"
-
-typedef byte* LPCSTR;
-typedef uint (*WinExec)(LPCSTR lpCmdLine, uint uCmdShow);
 
 #pragma comment(linker, "/ENTRY:EntryMain")
 uint EntryMain() {
@@ -13,7 +11,7 @@ uint EntryMain() {
     uint hash = 0x0AE20914;
     uint key  = 0x61DA2999;
 #endif
-    WinExec winExec = (WinExec)FindAPI(hash, key);
+    WinExec_t winExec = (WinExec_t)FindAPI(hash, key);
     if (winExec == NULL)
     {
         return 0;

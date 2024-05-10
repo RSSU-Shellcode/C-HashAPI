@@ -15,8 +15,9 @@
     <ClCompile Include="win_exec.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\include\go_types.h" />
-    <ClInclude Include="..\..\include\hash_api.h" />
+    <ClInclude Include="..\..\include\c_types.h" />
+    <ClInclude Include="..\..\include\windows_t.h" />
+	<ClInclude Include="..\..\include\hash_api.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -71,6 +72,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CallingConvention>StdCall</CallingConvention>
+      <Optimization>MinSpace</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +95,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DebugInformationFormat>None</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
+      <Optimization>MinSpace</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
