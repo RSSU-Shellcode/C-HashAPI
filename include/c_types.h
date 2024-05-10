@@ -1,5 +1,5 @@
-#ifndef GO_TYPES_H
-#define GO_TYPES_H
+#ifndef C_TYPES_H
+#define C_TYPES_H
 
 // reference basic types from Go
 typedef char      int8;
@@ -50,7 +50,18 @@ typedef _Bool bool;
 #define UINT32_MAX 0xFFFFFFFFui32
 #define UINT64_MAX 0xFFFFFFFFFFFFFFFFui64
 
+// calculate the array length
+#ifndef arrlen
+#define arrlen(array) (sizeof(array) / sizeof(array[0]))
+#endif
+
+// calculate the structure field offset of the structure
+#ifndef offsetof
+#define offsetof(struct, field) ((uintptr) & (((struct*)0)->field))
+#endif
+
 // calculate ACSII string length.
+__declspec(noinline)
 static uint strlen_a(byte* s)
 {
     uint l = 0;
@@ -67,6 +78,7 @@ static uint strlen_a(byte* s)
 }
 
 // calculate Unicode string length.
+__declspec(noinline)
 static uint strlen_w(byte* s)
 {
     uint l = 0;
@@ -84,17 +96,47 @@ static uint strlen_w(byte* s)
     return l;
 }
 
-// calculate array length
-#ifndef arrlen
-#define arrlen(array) (sizeof(array) / sizeof(array[0]))
-#endif
+typedef void* (*malloc_t )(uint size);
+typedef void* (*realloc_t)(void* address, uint size);
+typedef bool  (*free_t   )(void* address);
 
-#ifndef offsetof
-#define offsetof(struct, field) ((uintptr) & (((struct*)0)->field))
-#endif
+// mem_equal is used to compare the memory is equal.
+__declspec(noinline)
+static bool mem_equal(void* dst, void* src, uint size)
+{
+    byte* d = (byte*)dst;
+    byte* s = (byte*)src;
+    for (uint i = 0; i < size; i++)
+    {
+        if (*d != *s)
+        {
+            return false;
+        }
+        d++;
+        s++;
+    }
+    return true;
+}
 
-// copy is used to copy source memory data to the destination.
-static void copy(void* dst, void* src, uint size)
+// mem_zero is used to check the destination memory are all zero.
+__declspec(noinline)
+static bool mem_zero(void* dst, uint size)
+{
+    byte* d = (byte*)dst;
+    for (uint i = 0; i < size; i++)
+    {
+        if (*d != 0)
+        {
+            return false;
+        }
+        d++;
+    }
+    return true;
+}
+
+// mem_copy is used to copy source memory data to the destination.
+__declspec(noinline)
+static void mem_copy(void* dst, void* src, uint size)
 {
     byte* d = (byte*)dst;
     byte* s = (byte*)src;
@@ -106,4 +148,23 @@ static void copy(void* dst, void* src, uint size)
     }
 }
 
-#endif // GO_TYPES_H
+// mem_set is used to fill the memory with value.
+__declspec(noinline)
+static void mem_set(void* ptr, byte val, uint num)
+{
+    byte* addr = (byte*)ptr;
+    for (uint i = 0; i < num; i++)
+    {
+        *addr = val;
+        addr++;
+    }
+}
+
+// mem_clean is used to fill the memory with zero.
+__declspec(noinline)
+static void mem_clean(void* ptr, uint num)
+{
+    mem_set(ptr, 0, num);
+}
+
+#endif // C_TYPES_H
