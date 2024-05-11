@@ -104,8 +104,8 @@ uintptr FindAPI(uint hash, uint key)
                 funcName++;
             }
             // calculate the finally hash and compare it
-            uint h = seedHash + keyHash + modHash + funcHash;
-            if (h != hash) 
+            uint finHash = seedHash + keyHash + modHash + funcHash;
+            if (finHash != hash) 
             {
                 continue;
             }
@@ -154,7 +154,7 @@ uintptr FindAPI(uint hash, uint key)
             // build hash and key
             byte* module   = &dllName[0];
             byte* function = (byte*)((uint)exportName + dot + 1);
-            uint key  = 0xFFFFFFFF;
+            uint key  = finHash + (uint)function;
             uint hash = HashAPI_A(module, function, key);
             return FindAPI(hash, key);
         }
