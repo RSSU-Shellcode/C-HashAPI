@@ -11,11 +11,6 @@ rd /S /Q "example\win_exec\x64"
 rd /S /Q "example\win_exec\Debug"
 rd /S /Q "example\win_exec\Release"
 
-rd /S /Q "hash\x86"
-rd /S /Q "hash\x64"
-rd /S /Q "hash\Debug"
-rd /S /Q "hash\Release"
-
 rd /S /Q "test\x86"
 rd /S /Q "test\x64"
 rd /S /Q "test\Debug"
