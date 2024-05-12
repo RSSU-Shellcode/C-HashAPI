@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "c_types.h"
+#include "lib_string.h"
 #include "test.h"
 
 #define BANNER_BEGIN_SIZE 10 // strlen("Test Begin")

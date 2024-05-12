@@ -24,6 +24,12 @@
     <ClCompile Include="hash_api_test.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\lib_mem.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\lib_string.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\hash_api.h">
