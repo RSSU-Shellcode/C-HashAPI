@@ -24,7 +24,7 @@
     <ClCompile Include="hash_api_test.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\lib_mem.c">
+    <ClCompile Include="..\src\lib_memory.c">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lib_string.c">
@@ -42,6 +42,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\include\windows_t.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lib_memory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\lib_string.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
