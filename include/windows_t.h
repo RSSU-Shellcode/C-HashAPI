@@ -3,14 +3,7 @@
 
 #include "c_types.h"
 
-#ifndef _WINDOWS_
-#define _WINDOWS_
-
-#define MAX_PATH 260
-
-typedef byte* LPCSTR;
-
-#endif // _WINDOWS_
+typedef const char* LPCSTR;
 
 typedef uint (*WinExec_t)
 (
