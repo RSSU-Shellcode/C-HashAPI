@@ -11,11 +11,11 @@ uint EntryMain() {
     uint hash = 0x0AE20914;
     uint key  = 0x61DA2999;
 #endif
-    WinExec_t winExec = (WinExec_t)FindAPI(hash, key);
+    WinExec_t winExec = FindAPI(hash, key);
     if (winExec == NULL)
     {
-        return 0;
+        return 1;
     }
-    byte cmd[] = {'c', 'a', 'l', 'c', '.', 'e', 'x', 'e', 0};
+    char cmd[] = {'c', 'a', 'l', 'c', '.', 'e', 'x', 'e', 0};
     return winExec(&cmd[0], 1);
 }
