@@ -273,8 +273,8 @@ uint64 HashAPI64_W(uint16* module, byte* function, uint64 key)
     uint64 modHash = seedHash;
     for (;;)
     {
-        byte b0 = *(module + 0);
-        byte b1 = *(module + 1);
+        byte b0 = *(byte*)((uintptr)module + 0);
+        byte b1 = *(byte*)((uintptr)module + 1);
         if (b0 >= 'a')
         {
             b0 -= 0x20;
@@ -291,7 +291,7 @@ uint64 HashAPI64_W(uint16* module, byte* function, uint64 key)
         {
             break;
         }
-        module += 2;
+        module++;
     }
     // calculate function hash
     uint64 funcHash = seedHash;
@@ -398,8 +398,8 @@ uint32 HashAPI32_W(uint16* module, byte* function, uint32 key)
     uint32 modHash = seedHash;
     for (;;)
     {
-        byte b0 = *(module + 0);
-        byte b1 = *(module + 1);
+        byte b0 = *(byte*)((uintptr)module + 0);
+        byte b1 = *(byte*)((uintptr)module + 1);
         if (b0 >= 'a')
         {
             b0 -= 0x20;
@@ -416,7 +416,7 @@ uint32 HashAPI32_W(uint16* module, byte* function, uint32 key)
         {
             break;
         }
-        module += 2;
+        module++;
     }
     // calculate function hash
     uint32 funcHash = seedHash;
