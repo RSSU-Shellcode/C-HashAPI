@@ -11,14 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+	<ClCompile Include="win_exec.c" />
     <ClCompile Include="..\..\src\hash_api.c" />
     <ClCompile Include="..\..\src\lib_memory.c" />
-    <ClCompile Include="win_exec.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\c_types.h" />
-    <ClInclude Include="..\..\include\lib_memory.h" />
     <ClInclude Include="..\..\include\windows_t.h" />
+	<ClInclude Include="..\..\include\lib_memory.h" />
     <ClInclude Include="..\..\include\hash_api.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
