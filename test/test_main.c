@@ -7,10 +7,10 @@
 #define BANNER_END_SIZE   11 // strlen("Test Passed")
 #define BANNER_FAIL_SIZE  11 // strlen("Test Failed")
 
-static printBannerBegin(byte* name, uint len);
-static printBannerEnd  (byte* name, uint len, bool pass);
+static void printBannerBegin(byte* name, uint len);
+static void printBannerEnd  (byte* name, uint len, bool pass);
 
-int main()
+int __cdecl main()
 {
     // calculate the banner length
     uint maxNameLen = 0;
@@ -26,19 +26,19 @@ int main()
     uint bannerLen = (uint)16 + BANNER_END_SIZE + maxNameLen + 16;
 
     // run unit tests
-    bool failed = false;
+    bool fail = false;
     for (int i = 0; i < arrlen(tests); i++)
     {
         printBannerBegin(tests[i].Name, bannerLen);
         bool pass = tests[i].Test();
         if (!pass)
         {
-            failed = true;
+            fail = true;
         }
         printBannerEnd(tests[i].Name, bannerLen, pass);
     }
 
-    if (failed)
+    if (fail)
     {
         printf_s("Failed to test\n");
         return 1;
@@ -47,7 +47,7 @@ int main()
     return 0;
 }
 
-static printBannerBegin(byte* name, uint len)
+static void printBannerBegin(byte* name, uint len)
 {
     uint padLen = ( len - BANNER_BEGIN_SIZE - strlen_a(name)) / 2;
     bool equal  = ( len - BANNER_BEGIN_SIZE - strlen_a(name)) % 2 == 0;
@@ -70,7 +70,7 @@ static printBannerBegin(byte* name, uint len)
     printf_s("\n");
 }
 
-static printBannerEnd(byte* name, uint len, bool pass)
+static void printBannerEnd(byte* name, uint len, bool pass)
 {
     uint padLen = ( len - BANNER_END_SIZE - strlen_a(name)) / 2;
     bool equal  = ( len - BANNER_END_SIZE - strlen_a(name)) % 2 == 0;
