@@ -45,8 +45,8 @@ bool TestHashAPI32()
         printf_s("hash is incorrect\n");
         return false;
     }
-    printf_s("hash: 0x%lX\n", hash_a);
-    printf_s("key:  0x%lX\n", hash_key);
+    printf_s("hash: 0x%X\n", hash_a);
+    printf_s("key:  0x%X\n", hash_key);
 
     if (hash_a != hash_w)
     {
