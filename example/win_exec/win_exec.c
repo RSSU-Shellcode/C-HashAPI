@@ -17,5 +17,5 @@ uint EntryMain() {
         return 1;
     }
     char cmd[] = {'c', 'a', 'l', 'c', '.', 'e', 'x', 'e', 0};
-    return winExec(&cmd[0], 1);
+    return winExec(cmd, 1);
 }
