@@ -6,6 +6,7 @@
 // define unit tests
 #pragma warning(push)
 #pragma warning(disable: 4276)
+bool TestLibMemory();
 bool TestLibString();
 
 bool TestHashAPI();
@@ -19,6 +20,7 @@ typedef bool (*test_t)();
 typedef struct { byte* Name; test_t Test; } unit;
 
 static unit tests[] = {
+    { "Lib_Memory", TestLibMemory },
     { "Lib_String", TestLibString },
 
     { "HashAPI",   TestHashAPI   },
