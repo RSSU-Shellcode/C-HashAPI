@@ -1,8 +1,10 @@
+#pragma warning(disable: 4668)
+
 #include <stdio.h>
 #include <windows.h>
-#include "test.h"
 #include "c_types.h"
 #include "hash_api.h"
+#include "test.h"
 
 bool TestHashAPI64()
 {
