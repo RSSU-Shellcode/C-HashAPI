@@ -17,16 +17,19 @@
     <ClCompile Include="..\src\hash_api.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="hash_api_test.c">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\lib_memory.c">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\lib_string.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="lib_string_test.c">
+    <ClCompile Include="src\hash_api_test.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib_memory_test.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\lib_string_test.c">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
