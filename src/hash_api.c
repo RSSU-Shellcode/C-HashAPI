@@ -9,6 +9,7 @@
     #define KEY_SIZE 4
     #define ROR_BITS 4
 #endif
+
 #define ROR_SEED (ROR_BITS + 1)
 #define ROR_KEY  (ROR_BITS + 2)
 #define ROR_MOD  (ROR_BITS + 3)
@@ -247,133 +248,6 @@ uint HashAPI_W(uint16* module, byte* function, uint key)
 #endif
 }
 
-#define KEY_SIZE_64 8
-#define ROR_BITS_64 8
-#define ROR_SEED_64 (ROR_BITS_64 + 1)
-#define ROR_KEY_64  (ROR_BITS_64 + 2)
-#define ROR_MOD_64  (ROR_BITS_64 + 3)
-#define ROR_FUNC_64 (ROR_BITS_64 + 4)
-
-static uint64 calcSeedHash64(uint64 key);
-static uint64 calcKeyHash64(uint64 seed, uint64 key);
-static uint64 ror64(uint64 value, uint64 bits);
-
-__declspec(noinline)
-uint64 HashAPI64_A(byte* module, byte* function, uint64 key)
-{
-    uint64 seedHash = calcSeedHash64(key);
-    uint64 keyHash  = calcKeyHash64(seedHash, key);
-    // calculate module hash
-    uint64 modHash  = seedHash;
-    for (;;)
-    {
-        byte b = *module;
-        if (b >= 'a')
-        {
-            b -= 0x20;
-        }
-        modHash = ror64(modHash, ROR_MOD_64);
-        modHash += b;
-        modHash = ror64(modHash, ROR_MOD_64);
-        modHash += 0;
-        if (b == 0x00)
-        {
-            break;
-        }
-        module++;
-    }
-    // calculate function hash
-    uint64 funcHash = seedHash;
-    for (;;)
-    {
-        byte b = *function;
-        funcHash = ror64(funcHash, ROR_FUNC_64);
-        funcHash += b;
-        if (b == 0x00)
-        {
-            break;
-        }
-        function++;
-    }
-    return seedHash + keyHash + modHash + funcHash;
-}
-
-__declspec(noinline)
-uint64 HashAPI64_W(uint16* module, byte* function, uint64 key)
-{
-    uint64 seedHash = calcSeedHash64(key);
-    uint64 keyHash  = calcKeyHash64(seedHash, key);
-    // calculate module hash
-    uint64 modHash = seedHash;
-    for (;;)
-    {
-        byte b0 = *(byte*)((uintptr)module + 0);
-        byte b1 = *(byte*)((uintptr)module + 1);
-        if (b0 >= 'a')
-        {
-            b0 -= 0x20;
-        }
-        if (b1 >= 'a')
-        {
-            b1 -= 0x20;
-        }
-        modHash = ror64(modHash, ROR_MOD_64);
-        modHash += b0;
-        modHash = ror64(modHash, ROR_MOD_64);
-        modHash += b1;
-        if (b0 == 0x00 && b1 == 0x00)
-        {
-            break;
-        }
-        module++;
-    }
-    // calculate function hash
-    uint64 funcHash = seedHash;
-    for (;;)
-    {
-        byte b = *function;
-        funcHash = ror64(funcHash, ROR_FUNC_64);
-        funcHash += b;
-        if (b == 0x00)
-        {
-            break;
-        }
-        function++;
-    }
-    return seedHash + keyHash + modHash + funcHash;
-}
-
-static uint64 calcSeedHash64(uint64 key)
-{
-    uint64 hash = key;
-    byte*  ptr  = (byte*)(&key);
-    for (int i = 0; i < KEY_SIZE_64; i++)
-    {
-        hash = ror64(hash, ROR_SEED_64);
-        hash += *ptr;
-        ptr++;
-    }
-    return hash;
-}
-
-static uint64 calcKeyHash64(uint64 seed, uint64 key)
-{
-    uint64 hash = seed;
-    byte*  ptr  = (byte*)(&key);
-    for (int i = 0; i < KEY_SIZE_64; i++)
-    {
-        hash = ror64(hash, ROR_KEY_64);
-        hash += *ptr;
-        ptr++;
-    }
-    return hash;
-}
-
-static uint64 ror64(uint64 value, uint64 bits)
-{
-    return value >> bits | value << (64 - bits);
-}
-
 #define KEY_SIZE_32 4
 #define ROR_BITS_32 4
 #define ROR_SEED_32 (ROR_BITS_32 + 1)
@@ -499,4 +373,131 @@ static uint32 calcKeyHash32(uint32 seed, uint32 key)
 static uint32 ror32(uint32 value, uint32 bits)
 {
     return value >> bits | value << (32 - bits);
+}
+
+#define KEY_SIZE_64 8
+#define ROR_BITS_64 8
+#define ROR_SEED_64 (ROR_BITS_64 + 1)
+#define ROR_KEY_64  (ROR_BITS_64 + 2)
+#define ROR_MOD_64  (ROR_BITS_64 + 3)
+#define ROR_FUNC_64 (ROR_BITS_64 + 4)
+
+static uint64 calcSeedHash64(uint64 key);
+static uint64 calcKeyHash64(uint64 seed, uint64 key);
+static uint64 ror64(uint64 value, uint64 bits);
+
+__declspec(noinline)
+uint64 HashAPI64_A(byte* module, byte* function, uint64 key)
+{
+    uint64 seedHash = calcSeedHash64(key);
+    uint64 keyHash  = calcKeyHash64(seedHash, key);
+    // calculate module hash
+    uint64 modHash  = seedHash;
+    for (;;)
+    {
+        byte b = *module;
+        if (b >= 'a')
+        {
+            b -= 0x20;
+        }
+        modHash = ror64(modHash, ROR_MOD_64);
+        modHash += b;
+        modHash = ror64(modHash, ROR_MOD_64);
+        modHash += 0;
+        if (b == 0x00)
+        {
+            break;
+        }
+        module++;
+    }
+    // calculate function hash
+    uint64 funcHash = seedHash;
+    for (;;)
+    {
+        byte b = *function;
+        funcHash = ror64(funcHash, ROR_FUNC_64);
+        funcHash += b;
+        if (b == 0x00)
+        {
+            break;
+        }
+        function++;
+    }
+    return seedHash + keyHash + modHash + funcHash;
+}
+
+__declspec(noinline)
+uint64 HashAPI64_W(uint16* module, byte* function, uint64 key)
+{
+    uint64 seedHash = calcSeedHash64(key);
+    uint64 keyHash  = calcKeyHash64(seedHash, key);
+    // calculate module hash
+    uint64 modHash = seedHash;
+    for (;;)
+    {
+        byte b0 = *(byte*)((uintptr)module + 0);
+        byte b1 = *(byte*)((uintptr)module + 1);
+        if (b0 >= 'a')
+        {
+            b0 -= 0x20;
+        }
+        if (b1 >= 'a')
+        {
+            b1 -= 0x20;
+        }
+        modHash = ror64(modHash, ROR_MOD_64);
+        modHash += b0;
+        modHash = ror64(modHash, ROR_MOD_64);
+        modHash += b1;
+        if (b0 == 0x00 && b1 == 0x00)
+        {
+            break;
+        }
+        module++;
+    }
+    // calculate function hash
+    uint64 funcHash = seedHash;
+    for (;;)
+    {
+        byte b = *function;
+        funcHash = ror64(funcHash, ROR_FUNC_64);
+        funcHash += b;
+        if (b == 0x00)
+        {
+            break;
+        }
+        function++;
+    }
+    return seedHash + keyHash + modHash + funcHash;
+}
+
+static uint64 calcSeedHash64(uint64 key)
+{
+    uint64 hash = key;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < KEY_SIZE_64; i++)
+    {
+        hash = ror64(hash, ROR_SEED_64);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint64 calcKeyHash64(uint64 seed, uint64 key)
+{
+    uint64 hash = seed;
+    byte*  ptr  = (byte*)(&key);
+    for (int i = 0; i < KEY_SIZE_64; i++)
+    {
+        hash = ror64(hash, ROR_KEY_64);
+        hash += *ptr;
+        ptr++;
+    }
+    return hash;
+}
+
+static uint64 ror64(uint64 value, uint64 bits)
+{
+    return value >> bits | value << (64 - bits);
 }
