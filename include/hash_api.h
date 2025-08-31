@@ -10,30 +10,30 @@
 // FindAPI is NOT support DLL about API Sets.
 
 typedef void* (*FindAPI_t)(uint hash, uint key);
-typedef void* (*FindAPI_A_t)(byte* module, byte* function);
-typedef void* (*FindAPI_W_t)(uint16* module, byte* function);
+typedef void* (*FindAPI_A_t)(byte* module, byte* procedure);
+typedef void* (*FindAPI_W_t)(uint16* module, byte* procedure);
 
 // FindAPI is used to find Windows API address by hash and key.
-void* FindAPI(uint hash, uint key);
+void* FindAPI(uint module, uint procedure, uint key);
 
 // FindAPI_A is used to find Windows API address by module name
-// and function name with ANSI, it is a wrapper about FindAPI.
-void* FindAPI_A(byte* module, byte* function);
+// and procedure name with ANSI, it is a wrapper about FindAPI.
+void* FindAPI_A(byte* module, byte* procedure);
 
 // FindAPI_W is used to find Windows API address by module name
-// and function name with UTF-16, it is a wrapper about FindAPI.
-void* FindAPI_W(uint16* module, byte* function);
+// and procedure name with UTF-16, it is a wrapper about FindAPI.
+void* FindAPI_W(uint16* module, byte* procedure);
 
-// HashAPI_A is used to calculate Windows API hash by module
-// and function with key, module and function are ANSI.
-uint   HashAPI_A  (byte* module, byte* function, uint key);
-uint64 HashAPI64_A(byte* module, byte* function, uint64 key);
-uint32 HashAPI32_A(byte* module, byte* function, uint32 key);
+// CalcHash_A is used to calculate ANSI string hash with key.
+// It can calculate module name and procedure name.
+uint   CalcHash_A  (byte* data, uint key);
+uint32 CalcHash32_A(byte* data, uint32 key);
+uint64 CalcHash64_A(byte* data, uint64 key);
 
-// HashAPI_W is used to calculate Windows API hash by module
-// and function with key, module is UTF-16, function is ANSI.
-uint   HashAPI_W  (uint16* module, byte* function, uint key);
-uint64 HashAPI64_W(uint16* module, byte* function, uint64 key);
-uint32 HashAPI32_W(uint16* module, byte* function, uint32 key);
+// CalcHash_W is used to calculate UTF-16 string hash with key.
+// It can calculate module name.
+uint   CalcHash_W  (uint16* data, uint key);
+uint32 CalcHash32_W(uint16* data, uint32 key);
+uint64 CalcHash64_W(uint16* data, uint64 key);
 
 #endif // HASH_API_H
