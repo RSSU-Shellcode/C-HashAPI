@@ -49,7 +49,7 @@ void mem_move(void* dst, void* src, uint num)
     }
 }
 
-__declspec(noinline)
+#pragma optimize("", off)
 void mem_init(void* ptr, uint num)
 {
     if (num == 0)
@@ -58,6 +58,7 @@ void mem_init(void* ptr, uint num)
     }
     mem_set(ptr, 0, num);
 }
+#pragma optimize("", on)
 
 // prevent link to the internal function "memset"
 #pragma optimize("", off)
