@@ -24,16 +24,19 @@ void* FindAPI_A(byte* module, byte* procedure);
 // and procedure name with UTF-16, it is a wrapper about FindAPI.
 void* FindAPI_W(uint16* module, byte* procedure);
 
-// CalcHash_A is used to calculate ANSI string hash with key.
-// It can calculate module name and procedure name.
-uint   CalcHash_A  (byte* data, uint key);
-uint32 CalcHash32_A(byte* data, uint32 key);
-uint64 CalcHash64_A(byte* data, uint64 key);
+// CalcModHash_A is used to calculate module ANSI name hash with key.
+uint   CalcModHash_A  (byte* module, uint key);
+uint32 CalcModHash32_A(byte* module, uint32 key);
+uint64 CalcModHash64_A(byte* module, uint64 key);
 
-// CalcHash_W is used to calculate UTF-16 string hash with key.
-// It can calculate module name.
-uint   CalcHash_W  (uint16* data, uint key);
-uint32 CalcHash32_W(uint16* data, uint32 key);
-uint64 CalcHash64_W(uint16* data, uint64 key);
+// CalcModHash_W is used to calculate module UTF-16 name hash with key.
+uint   CalcModHash_W  (uint16* module, uint key);
+uint32 CalcModHash32_W(uint16* module, uint32 key);
+uint64 CalcModHash64_W(uint16* module, uint64 key);
+
+// CalcProcHash is used to calculate procedure name hash with key.
+uint   CalcProcHash  (byte* procedure, uint key);
+uint32 CalcProcHash32(byte* procedure, uint32 key);
+uint64 CalcProcHash64(byte* procedure, uint64 key);
 
 #endif // HASH_API_H
