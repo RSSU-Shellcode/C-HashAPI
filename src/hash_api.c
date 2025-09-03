@@ -20,7 +20,7 @@ static uint calcKeyHash(uint seed, uint key);
 static uint ror(uint value, uint bits);
 
 __declspec(noinline)
-void* FindAPI(uint hash, uint key)
+void* FindAPI(uint module, uint procedure, uint key)
 {
     uint seedHash = calcSeedHash(key);
     uint keyHash  = calcKeyHash(seedHash, key);
@@ -77,7 +77,7 @@ void* FindAPI(uint hash, uint key)
     #elif _WIN32
         uint16 nameLen = *(uint16*)(mod + 38);
     #endif
-        for (uint16 i = 0; i < nameLen; i++)
+        for (uint16 i = 0; i < nameLen - 1; i++)
         {
             byte b = *(byte*)(modName + i);
             if (b >= 'a')
@@ -205,46 +205,58 @@ static uint ror(uint value, uint bits)
 }
 
 __declspec(noinline)
-void* FindAPI_A(byte* module, byte* function)
+void* FindAPI_A(byte* module, byte* procedure)
 {
 #ifdef _WIN64
     uint key = 0xA6C1B1E79D26D1E7;
 #elif _WIN32
     uint key = 0x94645D8B;
 #endif
-    uint hash = HashAPI_A(module, function, key);
-    return FindAPI(hash, key);
+    uint mod  = CalcModHash_A(module, key);
+    uint proc = CalcProcHash(procedure, key);
+    return FindAPI(mod, proc, key);
 }
 
 __declspec(noinline)
-void* FindAPI_W(uint16* module, byte* function)
+void* FindAPI_W(uint16* module, byte* procedure)
 {
 #ifdef _WIN64
     uint key = 0xA6C1B1E79D26D1E7;
 #elif _WIN32
     uint key = 0x94645D8B;
 #endif
-    uint hash = HashAPI_W(module, function, key);
-    return FindAPI(hash, key);
+    uint mod  = CalcModHash_W(module, key);
+    uint proc = CalcProcHash(procedure, key);
+    return FindAPI(mod, proc, key);
 }
 
 __declspec(noinline)
-uint HashAPI_A(byte* module, byte* function, uint key)
+uint CalcModHash_A(byte* module, uint key)
 {
 #ifdef _WIN64
-    return (uint)HashAPI64_A(module, function, (uint64)key);
+    return (uint)CalcModHash64_A(module, (uint64)key);
 #elif _WIN32
-    return (uint)HashAPI32_A(module, function, (uint32)key);
+    return (uint)CalcModHash32_A(module, (uint32)key);
 #endif
 }
 
 __declspec(noinline)
-uint HashAPI_W(uint16* module, byte* function, uint key)
+uint CalcModHash_W(uint16* module, uint key)
 {
 #ifdef _WIN64
-    return (uint)HashAPI64_W(module, function, (uint64)key);
+    return (uint)CalcModHash64_W(module, (uint64)key);
 #elif _WIN32
-    return (uint)HashAPI32_W(module, function, (uint32)key);
+    return (uint)CalcModHash32_W(module, (uint32)key);
+#endif
+}
+
+__declspec(noinline)
+uint CalcProcHash(byte* procedure, uint key)
+{
+#ifdef _WIN64
+    return (uint)CalcProcHash64(procedure, (uint64)key);
+#elif _WIN32
+    return (uint)CalcProcHash32(procedure, (uint32)key);
 #endif
 }
 
