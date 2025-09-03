@@ -268,6 +268,10 @@ uint32 CalcModHash32_A(byte* module, uint32 key)
     for (;;)
     {
         byte b = *module;
+        if (b == 0x00)
+        {
+            break;
+        }
         if (b >= 'a')
         {
             b -= 0x20;
@@ -276,10 +280,6 @@ uint32 CalcModHash32_A(byte* module, uint32 key)
         modHash += b;
         modHash = ror32(modHash, ROR_MOD_32);
         modHash += 0;
-        if (b == 0x00)
-        {
-            break;
-        }
         module++;
     }
     return seedHash + keyHash + modHash;
@@ -295,6 +295,10 @@ uint32 CalcModHash32_W(uint16* module, uint32 key)
     {
         byte b0 = *(byte*)((uintptr)module + 0);
         byte b1 = *(byte*)((uintptr)module + 1);
+        if (b0 == 0x00 && b1 == 0x00)
+        {
+            break;
+        }
         if (b0 >= 'a')
         {
             b0 -= 0x20;
@@ -307,13 +311,29 @@ uint32 CalcModHash32_W(uint16* module, uint32 key)
         modHash += b0;
         modHash = ror32(modHash, ROR_MOD_32);
         modHash += b1;
-        if (b0 == 0x00 && b1 == 0x00)
-        {
-            break;
-        }
         module++;
     }
     return seedHash + keyHash + modHash;
+}
+
+__declspec(noinline)
+uint32 CalcProcHash32(byte* procedure, uint32 key)
+{
+    uint32 seedHash = calcSeedHash32(key);
+    uint32 keyHash  = calcKeyHash32(seedHash, key);
+    uint32 procHash = seedHash;
+    for (;;)
+    {
+        byte b = *procedure;
+        if (b == 0x00)
+        {
+            break;
+        }
+        procHash = ror32(procedure, ROR_PROC_32);
+        procHash += b;
+        procedure++;
+    }
+    return seedHash + keyHash + procHash;
 }
 
 static uint32 calcSeedHash32(uint32 key)
@@ -367,6 +387,10 @@ uint64 CalcModHash64_A(byte* module, uint64 key)
     for (;;)
     {
         byte b = *module;
+        if (b == 0x00)
+        {
+            break;
+        }
         if (b >= 'a')
         {
             b -= 0x20;
@@ -375,10 +399,6 @@ uint64 CalcModHash64_A(byte* module, uint64 key)
         modHash += b;
         modHash = ror64(modHash, ROR_MOD_64);
         modHash += 0;
-        if (b == 0x00)
-        {
-            break;
-        }
         module++;
     }
     return seedHash + keyHash + modHash;
@@ -389,12 +409,15 @@ uint64 CalcModHash64_W(uint16* module, uint64 key)
 {
     uint64 seedHash = calcSeedHash64(key);
     uint64 keyHash  = calcKeyHash64(seedHash, key);
-    // calculate module hash
-    uint64 modHash = seedHash;
+    uint64 modHash  = seedHash;
     for (;;)
     {
         byte b0 = *(byte*)((uintptr)module + 0);
         byte b1 = *(byte*)((uintptr)module + 1);
+        if (b0 == 0x00 && b1 == 0x00)
+        {
+            break;
+        }
         if (b0 >= 'a')
         {
             b0 -= 0x20;
@@ -407,13 +430,29 @@ uint64 CalcModHash64_W(uint16* module, uint64 key)
         modHash += b0;
         modHash = ror64(modHash, ROR_MOD_64);
         modHash += b1;
-        if (b0 == 0x00 && b1 == 0x00)
-        {
-            break;
-        }
         module++;
     }
     return seedHash + keyHash + modHash;
+}
+
+__declspec(noinline)
+uint64 CalcProcHash64(byte* procedure, uint64 key)
+{
+    uint64 seedHash = calcSeedHash64(key);
+    uint64 keyHash  = calcKeyHash64(seedHash, key);
+    uint64 procHash = seedHash;
+    for (;;)
+    {
+        byte b = *procedure;
+        if (b == 0x00)
+        {
+            break;
+        }
+        procHash = ror64(procedure, ROR_PROC_64);
+        procHash += b;
+        procedure++;
+    }
+    return seedHash + keyHash + procHash;
 }
 
 static uint64 calcSeedHash64(uint64 key)
