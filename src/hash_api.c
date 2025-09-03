@@ -13,7 +13,7 @@
 #define ROR_SEED (ROR_BITS + 1)
 #define ROR_KEY  (ROR_BITS + 2)
 #define ROR_MOD  (ROR_BITS + 3)
-#define ROR_FUNC (ROR_BITS + 4)
+#define ROR_PROC (ROR_BITS + 4)
 
 static uint calcSeedHash(uint key);
 static uint calcKeyHash(uint seed, uint key);
@@ -25,11 +25,11 @@ void* FindAPI(uint module, uint procedure, uint key)
     uint seedHash = calcSeedHash(key);
     uint keyHash  = calcKeyHash(seedHash, key);
 #ifdef _WIN64
-    uintptr peb = __readgsqword(96);
+    uintptr peb = __readgsqword(0x60);
     uintptr ldr = *(uintptr*)(peb + 24);
     uintptr mod = *(uintptr*)(ldr + 32);
 #elif _WIN32
-    uintptr peb = __readfsdword(48);
+    uintptr peb = __readfsdword(0x30);
     uintptr ldr = *(uintptr*)(peb + 12);
     uintptr mod = *(uintptr*)(ldr + 20);
 #endif
@@ -51,7 +51,7 @@ void* FindAPI(uint module, uint procedure, uint key)
     #endif
         uintptr peHeader = modBase + (uintptr)(*(uint32*)(modBase + 60));
     #ifdef _WIN64
-        // check this module actually a PE64 executable
+        // check this module actually a x64 PE image
         if (*(uint16*)(peHeader + 24) != 0x020B)
         {
             continue;
@@ -87,29 +87,34 @@ void* FindAPI(uint module, uint procedure, uint key)
             modHash = ror(modHash, ROR_MOD);
             modHash += b;
         }
-        // calculate function name hash
+        modHash += seedHash + keyHash;
+        if (modHash != module)
+        {
+            continue;
+        }
+        // calculate procedure name hash
         uint32  numNames  = *(uint32*)(eat + 24);
-        uintptr funcNames = modBase + (uintptr)(*(uint32*)(eat + 32));
+        uintptr procNames = modBase + (uintptr)(*(uint32*)(eat + 32));
         for (uint32 i = 0; i < numNames; i++)
         {
-            // calculate function name address
-            uint32 nameRVA  = *(uint32*)(funcNames + (uintptr)(i * 4));
-            byte*  funcName = (byte*)(modBase + nameRVA);
-            uint   funcHash = seedHash;
+            // calculate procedure name address
+            uint32 nameRVA  = *(uint32*)(procNames + (uintptr)(i * 4));
+            byte*  procName = (byte*)(modBase + nameRVA);
+            uint   procHash = seedHash;
             for (;;)
             {
-                byte b = *funcName;
-                funcHash = ror(funcHash, ROR_FUNC);
-                funcHash += b;
+                byte b = *procName;
                 if (b == 0x00)
                 {
                     break;
                 }
-                funcName++;
+                procHash = ror(procHash, ROR_PROC);
+                procHash += b;
+                procName++;
             }
             // calculate the finally hash and compare it
-            uint finHash = seedHash + keyHash + modHash + funcHash;
-            if (finHash != hash) 
+            procHash += seedHash + keyHash;
+            if (procHash != procedure) 
             {
                 continue;
             }
@@ -158,12 +163,13 @@ void* FindAPI(uint module, uint procedure, uint key)
             dllName[dot+2] = 'l';
             dllName[dot+3] = 'l';
             dllName[dot+4] = 0x00;
-            // build hash and key
-            byte* module   = dllName;
-            byte* function = (byte*)((uintptr)exportName + dot + 1);
-            uint k = finHash + (uint)procedure;
-            uint h = HashAPI_A(module, function, k);
-            return FindAPI(h, k);
+            // build module and procedure hash
+            byte* mod  = dllName;
+            byte* proc = (byte*)((uintptr)exportName + dot + 1);
+            uint  key  = procHash + (uint)procedure;
+            uint modHash  = CalcModHash_A(mod, key);
+            uint procHash = CalcProcHash(proc, key);
+            return FindAPI(modHash, procHash, key);
         }
     }
     return NULL;
