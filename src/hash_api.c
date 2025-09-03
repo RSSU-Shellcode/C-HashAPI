@@ -161,7 +161,7 @@ void* FindAPI(uint module, uint procedure, uint key)
             // build hash and key
             byte* module   = dllName;
             byte* function = (byte*)((uintptr)exportName + dot + 1);
-            uint k = finHash + (uint)function;
+            uint k = finHash + (uint)procedure;
             uint h = HashAPI_A(module, function, k);
             return FindAPI(h, k);
         }
