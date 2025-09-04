@@ -9,11 +9,15 @@
 bool TestLibMemory();
 bool TestLibString();
 
-bool TestHashAPI();
-bool TestHashAPI64();
-bool TestHashAPI32();
 bool TestFindAPI();
+bool TestFindAPI_ML();
+bool TestFindAPI_A();
+bool TestFindAPI_W();
 bool TestForwarded();
+bool TestCalcModHash_A();
+bool TestCalcModHash_W();
+bool TestCalcProcHash();
+
 #pragma warning(pop)
 
 typedef bool (*test_t)();
@@ -23,11 +27,14 @@ static unit tests[] = {
     { "Lib_Memory", TestLibMemory },
     { "Lib_String", TestLibString },
 
-    { "HashAPI",   TestHashAPI   },
-    { "HashAPI64", TestHashAPI64 },
-    { "HashAPI32", TestHashAPI32 },
-    { "FindAPI",   TestFindAPI   },
-    { "Forwarded", TestForwarded },
+    { "FindAPI",       TestFindAPI },
+    { "FindAPI_ML",    TestFindAPI_ML },
+    { "FindAPI_A",     TestFindAPI_A },
+    { "FindAPI_W",     TestFindAPI_W },
+    { "Forwarded",     TestForwarded },
+    { "CalcModHash_A", TestCalcModHash_A },
+    { "CalcModHash_W", TestCalcModHash_W },
+    { "CalcProcHash",  TestCalcProcHash },
 };
 
 #endif // TEST_H
