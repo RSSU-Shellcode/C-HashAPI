@@ -22,17 +22,16 @@ static uint ror(uint value, uint bits);
 __declspec(noinline)
 void* FindAPI(uint module, uint procedure, uint key)
 {
+    uintptr list = GetInMemoryOrderModuleList();
+    return FindAPI_ML(list, module, procedure, key);
+}
+
+__declspec(noinline)
+void* FindAPI_ML(uintptr list, uint module, uint procedure, uint key)
+{
     uint seedHash = calcSeedHash(key);
     uint keyHash  = calcKeyHash(seedHash, key);
-#ifdef _WIN64
-    uintptr peb = __readgsqword(0x60);
-    uintptr ldr = *(uintptr*)(peb + 24);
-    uintptr mod = *(uintptr*)(ldr + 32);
-#elif _WIN32
-    uintptr peb = __readfsdword(0x30);
-    uintptr ldr = *(uintptr*)(peb + 12);
-    uintptr mod = *(uintptr*)(ldr + 20);
-#endif
+    uintptr mod = list;
     for (;; mod = *(uintptr*)(mod))
     {
     #ifdef _WIN64
@@ -164,11 +163,9 @@ void* FindAPI(uint module, uint procedure, uint key)
             dllName[dot+3] = 'l';
             dllName[dot+4] = 0x00;
             // build module and procedure hash
-            byte* mod  = dllName;
-            byte* proc = (byte*)((uintptr)exportName + dot + 1);
-            uint  key  = procHash + (uint)procedure;
-            uint modHash  = CalcModHash_A(mod, key);
-            uint procHash = CalcProcHash(proc, key);
+            procName = (byte*)((uintptr)exportName + dot + 1);
+            modHash  = CalcModHash_A(dllName, key);
+            procHash = CalcProcHash(procName, key);
             return FindAPI(modHash, procHash, key);
         }
     }
@@ -266,6 +263,23 @@ uint CalcProcHash(byte* procedure, uint key)
 #endif
 }
 
+__declspec(noinline)
+uintptr GetInMemoryOrderModuleList()
+{
+#ifdef _WIN64
+    uintptr teb = __readgsqword(0x30);
+    uintptr peb = *(uintptr*)(teb + 0x60);
+    uintptr ldr = *(uintptr*)(peb + 0x18);
+    uintptr mod = *(uintptr*)(ldr + 0x20);
+#elif _WIN32
+    uintptr teb = __readfsdword(0x18);
+    uintptr peb = *(uintptr*)(teb + 0x30);
+    uintptr ldr = *(uintptr*)(peb + 0x0C);
+    uintptr mod = *(uintptr*)(ldr + 0x14);
+#endif
+    return mod;
+}
+
 #define KEY_SIZE_32 4
 #define ROR_BITS_32 4
 #define ROR_SEED_32 (ROR_BITS_32 + 1)
@@ -347,7 +361,7 @@ uint32 CalcProcHash32(byte* procedure, uint32 key)
         {
             break;
         }
-        procHash = ror32(procedure, ROR_PROC_32);
+        procHash = ror32(procHash, ROR_PROC_32);
         procHash += b;
         procedure++;
     }
@@ -466,7 +480,7 @@ uint64 CalcProcHash64(byte* procedure, uint64 key)
         {
             break;
         }
-        procHash = ror64(procedure, ROR_PROC_64);
+        procHash = ror64(procHash, ROR_PROC_64);
         procHash += b;
         procedure++;
     }
