@@ -17,6 +17,7 @@ bool TestFindAPI()
 #endif
     uint modHash  = CalcModHash_A(module, key);
     uint procHash = CalcProcHash(procedure, key);
+
     void* proc = FindAPI(modHash, procHash, key);
     if (proc != &WinExec)
     {
@@ -41,6 +42,7 @@ bool TestFindAPI_ML()
     uintptr list  = GetInMemoryOrderModuleList();
     uint modHash  = CalcModHash_A(module, key);
     uint procHash = CalcProcHash(procedure, key);
+
     void* proc = FindAPI_ML(list, modHash, procHash, key);
     if (proc != &WinExec)
     {
@@ -55,11 +57,35 @@ bool TestFindAPI_ML()
 
 bool TestFindAPI_A()
 {
+    byte* module    = "kernel32.dll";
+    byte* procedure = "WinExec";
+
+    void* proc = FindAPI_A(module, procedure);
+    if (proc != &WinExec)
+    {
+        printf_s("Result:  %llX\n", (uint64)proc);
+        printf_s("WinExec: %llX\n", (uint64)(&WinExec));
+        printf_s("WinExec address is incorrect\n");
+        return false;
+    }
+    printf_s("WinExec: 0x%llX\n", (uint64)proc);
     return true;
 }
 
 bool TestFindAPI_W()
 {
+    uint16* module    = L"kernel32.dll";
+    byte*   procedure = "WinExec";
+
+    void* proc = FindAPI_W(module, procedure);
+    if (proc != &WinExec)
+    {
+        printf_s("Result:  %llX\n", (uint64)proc);
+        printf_s("WinExec: %llX\n", (uint64)(&WinExec));
+        printf_s("WinExec address is incorrect\n");
+        return false;
+    }
+    printf_s("WinExec: 0x%llX\n", (uint64)proc);
     return true;
 }
 
@@ -82,6 +108,7 @@ bool TestForwarded()
 #endif
     uint modHash  = CalcModHash_A(module, key);
     uint procHash = CalcProcHash(procedure, key);
+
     void* proc = FindAPI(modHash, procHash, key);
     if (proc != closeState)
     {
