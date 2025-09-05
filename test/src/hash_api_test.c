@@ -8,15 +8,15 @@
 
 bool TestFindAPI()
 {
-    byte* module    = "kernel32.dll";
-    byte* procedure = "WinExec";
 #ifdef _WIN64
     uint key = 0x6A6867C72D518853;
 #elif _WIN32
     uint key = 0xCADE960B;
 #endif
-    uint modHash  = CalcModHash_A(module, key);
-    uint procHash = CalcProcHash(procedure, key);
+    byte* module    = "kernel32.dll";
+    byte* procedure = "WinExec";
+    uint  modHash   = CalcModHash_A(module, key);
+    uint  procHash  = CalcProcHash(procedure, key);
 
     void* proc = FindAPI(modHash, procHash, key);
     if (proc != &WinExec)
@@ -32,17 +32,17 @@ bool TestFindAPI()
 
 bool TestFindAPI_ML()
 {
-    byte* module    = "kernel32.dll";
-    byte* procedure = "WinExec";
 #ifdef _WIN64
     uint key = 0x6A6867C72D518853;
 #elif _WIN32
     uint key = 0xCADE960B;
 #endif
-    uintptr list  = GetInMemoryOrderModuleList();
-    uint modHash  = CalcModHash_A(module, key);
-    uint procHash = CalcProcHash(procedure, key);
+    byte* module    = "kernel32.dll";
+    byte* procedure = "WinExec";
+    uint  modHash   = CalcModHash_A(module, key);
+    uint  procHash  = CalcProcHash(procedure, key);\
 
+    uintptr list = GetInMemoryOrderModuleList();
     void* proc = FindAPI_ML(list, modHash, procHash, key);
     if (proc != &WinExec)
     {
@@ -148,13 +148,13 @@ bool TestCalcModHash64()
 {
     byte*   module_a = "kernel32.dll";
     uint16* module_w = L"kernel32.dll";
-    uint64  key      = 0x6A6867C72D518853;
+    uint64  key      = 0x7A61A1C72F518C54;
     
     uint64 hash_a = CalcModHash64_A(module_a, key);
     uint64 hash_w = CalcModHash64_W(module_w, key);
 
     printf_s("hash: 0x%llX\n", hash_a);
-    if (hash_a != 0x45BC05B44B0BA44)
+    if (hash_a != 0x2A5175AD1A0CECBC)
     {
         printf_s("hash is incorrect\n");
         return false;
@@ -169,10 +169,30 @@ bool TestCalcModHash64()
 
 bool TestCalcProcHash32()
 {
+    byte*  proc = "WinExec";
+    uint32 key  = 0xCADE960B;
+    uint32 hash = CalcProcHash32(proc, key);
+    
+    printf_s("hash: 0x%X\n", hash);
+    if (hash != 0x3CA3C21A)
+    {
+        printf_s("hash is incorrect\n");
+        return false;
+    }
     return true;
 }
 
 bool TestCalcProcHash64()
 {
+    byte*  proc = "WinExec";
+    uint64 key  = 0x7A61A1C72F518C54;
+    uint64 hash = CalcProcHash64(proc, key);
+    
+    printf_s("hash: 0x%llX\n", hash);
+    if (hash != 0x6596B31A1F68D830)
+    {
+        printf_s("hash is incorrect\n");
+        return false;
+    }
     return true;
 }
