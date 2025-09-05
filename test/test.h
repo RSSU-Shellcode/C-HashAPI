@@ -14,9 +14,10 @@ bool TestFindAPI_ML();
 bool TestFindAPI_A();
 bool TestFindAPI_W();
 bool TestForwarded();
-bool TestCalcModHash_A();
-bool TestCalcModHash_W();
-bool TestCalcProcHash();
+bool TestCalcModHash32();
+bool TestCalcModHash64();
+bool TestCalcProcHash32();
+bool TestCalcProcHash64();
 
 #pragma warning(pop)
 
@@ -27,14 +28,15 @@ static unit tests[] = {
     { "Lib_Memory", TestLibMemory },
     { "Lib_String", TestLibString },
 
-    { "FindAPI",       TestFindAPI },
-    { "FindAPI_ML",    TestFindAPI_ML },
-    { "FindAPI_A",     TestFindAPI_A },
-    { "FindAPI_W",     TestFindAPI_W },
-    { "Forwarded",     TestForwarded },
-    { "CalcModHash_A", TestCalcModHash_A },
-    { "CalcModHash_W", TestCalcModHash_W },
-    { "CalcProcHash",  TestCalcProcHash },
+    { "FindAPI",        TestFindAPI        },
+    { "FindAPI_ML",     TestFindAPI_ML     },
+    { "FindAPI_A",      TestFindAPI_A      },
+    { "FindAPI_W",      TestFindAPI_W      },
+    { "Forwarded",      TestForwarded      },
+    { "CalcModHash32",  TestCalcModHash32  },
+    { "CalcModHash64",  TestCalcModHash64  },
+    { "CalcProcHash32", TestCalcProcHash32 },
+    { "CalcProcHash64", TestCalcProcHash64 },
 };
 
 #endif // TEST_H
