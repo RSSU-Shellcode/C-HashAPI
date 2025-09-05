@@ -76,7 +76,7 @@ void* FindAPI_ML(uintptr list, uint module, uint procedure, uint key)
     #elif _WIN32
         uint16 nameLen = *(uint16*)(mod + 38);
     #endif
-        for (uint16 i = 0; i < nameLen - 1; i++)
+        for (uint16 i = 0; i < nameLen - 2; i++)
         {
             byte b = *(byte*)(modName + i);
             if (b >= 'a')
