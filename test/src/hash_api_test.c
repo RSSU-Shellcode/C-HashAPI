@@ -121,103 +121,58 @@ bool TestForwarded()
     return true;
 }
 
-bool TestCalcModHash_A()
+bool TestCalcModHash32()
+{
+    byte*   module_a = "kernel32.dll";
+    uint16* module_w = L"kernel32.dll";
+    uint32  key      = 0xCADE960B;
+    
+    uint32 hash_a = CalcModHash32_A(module_a, key);
+    uint32 hash_w = CalcModHash32_W(module_w, key);
+    
+    printf_s("hash: 0x%X\n", hash_a);
+    if (hash_a != 0x42509A1C)
+    {
+        printf_s("hash is incorrect\n");
+        return false;
+    }
+    if (hash_a != hash_w)
+    {
+        printf_s("hash is not equal\n");
+        return false;
+    }
+    return true;
+}
+
+bool TestCalcModHash64()
+{
+    byte*   module_a = "kernel32.dll";
+    uint16* module_w = L"kernel32.dll";
+    uint64  key      = 0x6A6867C72D518853;
+    
+    uint64 hash_a = CalcModHash64_A(module_a, key);
+    uint64 hash_w = CalcModHash64_W(module_w, key);
+
+    printf_s("hash: 0x%llX\n", hash_a);
+    if (hash_a != 0x45BC05B44B0BA44)
+    {
+        printf_s("hash is incorrect\n");
+        return false;
+    }
+    if (hash_a != hash_w)
+    {
+        printf_s("hash is not equal\n");
+        return false;
+    }
+    return true;
+}
+
+bool TestCalcProcHash32()
 {
     return true;
 }
 
-bool TestCalcModHash_W()
+bool TestCalcProcHash64()
 {
     return true;
 }
-
-bool TestCalcProcHash()
-{
-    return true;
-}
-
-// bool TestHashAPI32()
-// {
-//     byte*   module_a = "kernel32.dll";
-//     uint16* module_w = L"kernel32.dll";
-//     byte*   function = "WinExec";
-//     uint32  hash_key = 0xCADE960B;
-// 
-//     uint32 hash_a = HashAPI32_A(module_a, function, hash_key);
-//     uint32 hash_w = HashAPI32_W(module_w, function, hash_key);
-// 
-//     if (hash_a != 0xBB27B6F4)
-//     {
-//         printf_s("hash is incorrect\n");
-//         return false;
-//     }
-//     printf_s("hash: 0x%X\n", hash_a);
-//     printf_s("key:  0x%X\n", hash_key);
-// 
-//     if (hash_a != hash_w)
-//     {
-//         printf_s("hash is not equal\n");
-//         return false;
-//     }
-//     return true;
-// }
-// 
-// bool TestHashAPI()
-// {
-//     byte*   module_a = "kernel32.dll";
-//     uint16* module_w = L"kernel32.dll";
-//     byte*   function = "WinExec";
-// #ifdef _WIN64
-//     uint hash_key = 0x6A6867C72D518853;
-// #elif _WIN32
-//     uint hash_key = 0xCADE960B;
-// #endif
-//     
-//     uint hash_a = HashAPI_A(module_a, function, hash_key);
-//     uint hash_w = HashAPI_W(module_w, function, hash_key);
-// 
-// #ifdef _WIN64
-//     if (hash_a != 0xD2A4AE1BF1F15E57)
-// #elif _WIN32
-//     if (hash_a != 0xBB27B6F4)
-// #endif
-//     {
-//         printf_s("hash is incorrect\n");
-//         return false;
-//     }
-//     printf_s("hash: 0x%llX\n", (uint64)hash_a);
-//     printf_s("key:  0x%llX\n", (uint64)hash_key);
-// 
-//     if (hash_a != hash_w)
-//     {
-//         printf_s("hash is not equal\n");
-//         return false;
-//     }
-//     return true;
-// }
-//
-// bool TestHashAPI64()
-// {
-//     byte*   module_a = "kernel32.dll";
-//     uint16* module_w = L"kernel32.dll";
-//     byte*   function = "WinExec";
-//     uint64  hash_key = 0x6A6867C72D518853;
-// 
-//     uint64 hash_a = HashAPI64_A(module_a, function, hash_key);
-//     uint64 hash_w = HashAPI64_W(module_w, function, hash_key);
-// 
-//     if (hash_a != 0xD2A4AE1BF1F15E57)
-//     {
-//         printf_s("hash is incorrect\n");
-//         return false;
-//     }
-//     printf_s("hash: 0x%llX\n", hash_a);
-//     printf_s("key:  0x%llX\n", hash_key);
-// 
-//     if (hash_a != hash_w)
-//     {
-//         printf_s("hash is not equal\n");
-//         return false;
-//     }
-//     return true;
-// }
