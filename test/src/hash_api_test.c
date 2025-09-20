@@ -42,7 +42,7 @@ bool TestFindAPI_ML()
     uint  modHash   = CalcModHash_A(module, key);
     uint  procHash  = CalcProcHash(procedure, key);\
 
-    uintptr list = GetInMemoryOrderModuleList();
+    void* list = GetInMemoryOrderModuleList();
     void* proc = FindAPI_ML(list, modHash, procHash, key);
     if (proc != &WinExec)
     {
